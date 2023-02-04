@@ -26,10 +26,13 @@ import static org.springframework.util.MimeType.valueOf;
 import com.fortycoderplus.rsocket.exchange.autoconfigure.EnableRSocketClients;
 import java.time.Duration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.codec.cbor.Jackson2CborDecoder;
+import org.springframework.http.codec.cbor.Jackson2CborEncoder;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.service.RSocketServiceProxyFactory;
@@ -41,6 +44,15 @@ import reactor.util.retry.Retry;
 @EnableConfigurationProperties(RSocketExchangeClientProperties.class)
 @EnableRSocketClients(basePackages = "com.fortycoderplus.rsocket.exchange.sample.client")
 public class RSocketExchangeClientConfigure {
+
+    @ConditionalOnMissingBean
+    @Bean
+    public RSocketStrategies rsocketStrategies() {
+        return RSocketStrategies.builder()
+                .encoders(encoders -> encoders.add(new Jackson2CborEncoder()))
+                .decoders(decoders -> decoders.add(new Jackson2CborDecoder()))
+                .build();
+    }
 
     @Bean
     public RSocketRequester rsocketRequester(

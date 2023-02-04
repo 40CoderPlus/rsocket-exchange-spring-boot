@@ -23,12 +23,11 @@ package com.fortycoderplus.rsocket.exchange.autoconfigure;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.rsocket.RSocketRequester;
+import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.service.RSocketServiceProxyFactory;
 
-@ConditionalOnBean(RSocketRequester.class)
-@Configuration
+@ConditionalOnBean({RSocketRequester.class, RSocketStrategies.class})
 public class RSocketExchangeAutoConfigure {
 
     @Bean
