@@ -1,0 +1,5 @@
+rootProject.name = 'rsocket-exchange-spring-boot'
+include 'roscket-exchange-spring-boot-autoconfigure'
+include 'rsocket-exchange-spring-boot-starter'
+include 'rsocket-exchange-spring-boot-sample'
+
