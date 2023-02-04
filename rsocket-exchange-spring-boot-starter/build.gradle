@@ -1,0 +1,3 @@
+dependencies {
+    api project(':roscket-exchange-spring-boot-autoconfigure')
+}
