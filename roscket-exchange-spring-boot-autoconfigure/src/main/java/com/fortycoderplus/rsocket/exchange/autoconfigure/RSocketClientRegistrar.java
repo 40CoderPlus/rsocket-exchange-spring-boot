@@ -23,16 +23,16 @@ package com.fortycoderplus.rsocket.exchange.autoconfigure;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -41,19 +41,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.messaging.rsocket.service.RSocketServiceProxyFactory;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 @Slf4j
 public class RSocketClientRegistrar
-        implements ImportBeanDefinitionRegistrar,
-                BeanClassLoaderAware,
-                BeanFactoryAware,
-                ResourceLoaderAware,
-                EnvironmentAware {
+        implements ImportBeanDefinitionRegistrar, BeanClassLoaderAware, ResourceLoaderAware, EnvironmentAware {
 
-    private BeanFactory beanFactory;
     private ClassLoader classLoader;
     private Environment environment;
     private ResourceLoader resourceLoader;
@@ -127,8 +121,14 @@ public class RSocketClientRegistrar
         try {
             String className = annotationMetadata.getClassName();
             Class<?> target = Class.forName(className);
-            RSocketServiceProxyFactory proxyFactory = beanFactory.getBean(RSocketServiceProxyFactory.class);
-            ((DefaultListableBeanFactory) beanFactory).registerSingleton(className, proxyFactory.createClient(target));
+            BeanDefinitionBuilder bdb = BeanDefinitionBuilder.genericBeanDefinition(RSocketClientFactory.class);
+            bdb.addPropertyValue("type", target);
+            Objects.requireNonNull(annotationMetadata.getAnnotationAttributes(RSocketClient.class.getName()))
+                    .forEach(bdb::addPropertyValue);
+            bdb.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE).setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+            BeanDefinition beanDefinition = bdb.getBeanDefinition();
+            registry.registerBeanDefinition(
+                    BeanDefinitionReaderUtils.generateBeanName(beanDefinition, registry), beanDefinition);
         } catch (ClassNotFoundException ex) {
             logger.error("Could not register target class: " + annotationMetadata.getClassName(), ex);
         }
@@ -142,11 +142,6 @@ public class RSocketClientRegistrar
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-    }
-
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
     }
 
     @Override

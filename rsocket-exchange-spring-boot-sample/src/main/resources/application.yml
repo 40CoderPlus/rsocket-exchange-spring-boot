@@ -1,6 +1,6 @@
 spring:
   application:
-    name: rsocket-cloudevents
+    name: rsocket-exchange-sample
   profiles:
     active: ${RSOCKET_EXCHANGE_PROFILE:server}
 

@@ -35,7 +35,6 @@ import org.springframework.http.codec.cbor.Jackson2CborDecoder;
 import org.springframework.http.codec.cbor.Jackson2CborEncoder;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
-import org.springframework.messaging.rsocket.service.RSocketServiceProxyFactory;
 import reactor.util.retry.Retry;
 
 @Profile("client")
@@ -62,10 +61,5 @@ public class RSocketExchangeClientConfigure {
                 .rsocketConnector(connector -> connector.reconnect(Retry.fixedDelay(2, Duration.ofSeconds(2))))
                 .dataMimeType(valueOf(APPLICATION_CBOR.getString()))
                 .tcp(properties.server().host(), properties.server().port());
-    }
-
-    @Bean
-    public RSocketServiceProxyFactory proxyFactory(RSocketRequester rsocketRequester) {
-        return RSocketServiceProxyFactory.builder(rsocketRequester).build();
     }
 }

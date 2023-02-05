@@ -29,4 +29,19 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RSocketClient {}
+public @interface RSocketClient {
+
+    /**
+     * RSocketRequester bean name.
+     *
+     * @return String
+     */
+    String rsocketRequester() default "";
+
+    /**
+     * RSocketServiceProxyFactory bean name.
+     *
+     * @return String
+     */
+    String proxyFactory() default "";
+}
