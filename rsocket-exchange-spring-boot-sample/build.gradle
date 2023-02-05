@@ -1,4 +1,8 @@
+apply plugin: 'org.springframework.boot'
+
 dependencies {
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
     implementation project(':rsocket-exchange-spring-boot-starter')
 
     annotationProcessor 'org.projectlombok:lombok'
