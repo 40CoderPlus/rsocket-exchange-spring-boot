@@ -37,7 +37,7 @@ import reactor.core.publisher.Mono;
 public class AnswerEndpoint {
 
     @MessageMapping("answer")
-    public Mono<Answer> ping(@Payload Question question) {
+    public Mono<Answer> answer(@Payload Question question) {
         logger.info("Received question:{}", question);
         return question.current() < Integer.MAX_VALUE
                 ? Mono.just(new Answer(question.current(), question.current() + 1))
