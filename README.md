@@ -60,4 +60,7 @@ public interface AnswerService {
 }
 ```
 
-See more in module [rsocket-exchange-spring-boot-sample](rsocket-exchange-spring-boot-sample)
+See more:
+- [rsocket-exchange-spring-boot-sample](rsocket-exchange-spring-boot-sample)
+- [Spring RSocket](https://docs.spring.io/spring-framework/docs/current/reference/html/rsocket.html)
+- [RSocket](https://rsocket.io)
