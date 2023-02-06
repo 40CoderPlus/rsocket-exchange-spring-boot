@@ -44,15 +44,6 @@ import reactor.util.retry.Retry;
 @EnableRSocketClients(basePackages = "com.fortycoderplus.rsocket.exchange.sample.client")
 public class RSocketExchangeClientConfigure {
 
-    @ConditionalOnMissingBean
-    @Bean
-    public RSocketStrategies rsocketStrategies() {
-        return RSocketStrategies.builder()
-                .encoders(encoders -> encoders.add(new Jackson2CborEncoder()))
-                .decoders(decoders -> decoders.add(new Jackson2CborDecoder()))
-                .build();
-    }
-
     @Bean
     public RSocketRequester rsocketRequester(
             RSocketExchangeClientProperties properties, RSocketStrategies rsocketStrategies) {
