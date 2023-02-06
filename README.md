@@ -4,7 +4,14 @@ Add annotation `@RSocketClient` for `@RScoketExchange`.
 
 Add annotation `@EnableRSocketClients` for init beans with annotation `@RSocketClient`.
 
+# Requirements
+
+- Spring Framework 6/Spring Boot 3
+- Java 17+
+
 # How to use
+
+Annotation interface by `@RSocketClient`
 
 ```java
 @RSocketClient
@@ -15,7 +22,25 @@ public interface AnswerService {
 }
 ```
 
-or
+Use `AnswerService` to communicate with RSocket Server
+
+```java
+@AllArgsConstructor
+@RestController
+public class QuestionApi {
+
+    private AnswerService answerService;
+
+    @RequestMapping(path = "/question")
+    public Mono<Answer> question(@RequestParam(name = "current") int current) {
+        return answerService.answer(new Question(current));
+    }
+}
+```
+
+More about `@RSocketClient`
+
+Use you own `RSocketServiceProxyFactory`
 ```java
 @RSocketClient(proxyFactory = "myProxyFactory")
 public interface AnswerService {
@@ -25,7 +50,7 @@ public interface AnswerService {
 }
 ```
 
-or
+Use you own `RSocketRequester`
 ```java
 @RSocketClient(rsocketRequester = "myRSocketRequester")
 public interface AnswerService {
