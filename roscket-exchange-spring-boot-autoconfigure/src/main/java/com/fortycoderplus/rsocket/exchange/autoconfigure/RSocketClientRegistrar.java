@@ -20,13 +20,11 @@
 
 package com.fortycoderplus.rsocket.exchange.autoconfigure;
 
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -41,14 +39,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.messaging.rsocket.service.RSocketExchange;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 @Slf4j
-public class RSocketClientRegistrar
-        implements ImportBeanDefinitionRegistrar, BeanClassLoaderAware, ResourceLoaderAware, EnvironmentAware {
+public class RSocketClientRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
-    private ClassLoader classLoader;
     private Environment environment;
     private ResourceLoader resourceLoader;
 
@@ -92,25 +89,11 @@ public class RSocketClientRegistrar
 
             @Override
             protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
-                if (beanDefinition.getMetadata().isIndependent()) {
-                    if (beanDefinition.getMetadata().isInterface()
-                            && beanDefinition.getMetadata().getInterfaceNames().length == 1
-                            && Annotation.class
-                                    .getName()
-                                    .equals(beanDefinition.getMetadata().getInterfaceNames()[0])) {
-                        try {
-                            Class<?> target = ClassUtils.forName(
-                                    beanDefinition.getMetadata().getClassName(),
-                                    RSocketClientRegistrar.this.classLoader);
-                            return !target.isAnnotation();
-                        } catch (Exception ex) {
-                            logger.error(
-                                    "Could not load target class: "
-                                            + beanDefinition.getMetadata().getClassName(),
-                                    ex);
-                        }
-                    }
-                    return true;
+                if (beanDefinition.getMetadata().isIndependent()
+                        && beanDefinition.getMetadata().isInterface()
+                        && beanDefinition.getMetadata().hasAnnotation(RSocketClient.class.getCanonicalName())) {
+                    return beanDefinition.getMetadata().getDeclaredMethods().stream()
+                            .anyMatch(mm -> mm.isAnnotated(RSocketExchange.class.getCanonicalName()));
                 }
                 return false;
             }
@@ -142,10 +125,5 @@ public class RSocketClientRegistrar
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-    }
-
-    @Override
-    public void setBeanClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
     }
 }
