@@ -60,6 +60,18 @@ public interface AnswerService {
 }
 ```
 
+### Limit
+
+Current can't auto register `@RSocketClient` bean for Server push message to client.
+But we can do like this:
+
+```groovy
+AnswerService createServiceForClient(RSocketRequester rsocketRequester) {
+    return RSocketServiceProxyFactory.builder(rsocketRequester).build()
+        .createClient(AnswerService.class);
+}
+```
+
 See more:
 - [rsocket-exchange-spring-boot-sample](rsocket-exchange-spring-boot-sample)
 - [Spring RSocket](https://docs.spring.io/spring-framework/docs/current/reference/html/rsocket.html)

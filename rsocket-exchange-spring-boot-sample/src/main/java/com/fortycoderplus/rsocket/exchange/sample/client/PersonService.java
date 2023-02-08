@@ -20,31 +20,14 @@
 
 package com.fortycoderplus.rsocket.exchange.sample.client;
 
-import com.fortycoderplus.rsocket.exchange.sample.message.Answer;
+import com.fortycoderplus.rsocket.exchange.autoconfigure.RSocketClient;
 import com.fortycoderplus.rsocket.exchange.sample.message.Person;
-import com.fortycoderplus.rsocket.exchange.sample.message.Question;
-import com.fortycoderplus.rsocket.exchange.sample.message.Score;
-import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import org.springframework.messaging.rsocket.service.RSocketExchange;
+import reactor.core.publisher.Flux;
 
-@AllArgsConstructor
-@Profile("client")
-@RestController
-public class QuestionApi {
+@RSocketClient
+public interface PersonService {
 
-    private AnswerService answerService;
-
-    @RequestMapping(path = "/question")
-    public Mono<Answer> question(@RequestParam(name = "current") int current) {
-        return answerService.answer(new Question(current));
-    }
-
-    @RequestMapping(path = "/score")
-    public Mono<Score> score(Person person) {
-        return answerService.score(person);
-    }
+    @RSocketExchange("persons")
+    Flux<Person> persons();
 }

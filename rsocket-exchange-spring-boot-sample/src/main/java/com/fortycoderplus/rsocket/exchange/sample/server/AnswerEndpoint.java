@@ -21,7 +21,9 @@
 package com.fortycoderplus.rsocket.exchange.sample.server;
 
 import com.fortycoderplus.rsocket.exchange.sample.message.Answer;
+import com.fortycoderplus.rsocket.exchange.sample.message.Person;
 import com.fortycoderplus.rsocket.exchange.sample.message.Question;
+import com.fortycoderplus.rsocket.exchange.sample.message.Score;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -42,5 +44,11 @@ public class AnswerEndpoint {
         return question.current() < Integer.MAX_VALUE
                 ? Mono.just(new Answer(question.current(), question.current() + 1))
                 : Mono.error(() -> new IllegalArgumentException("max integer"));
+    }
+
+    @MessageMapping("score")
+    public Mono<Score> answer(@Payload Person person) {
+        logger.info("Received person:{} to ask score", person);
+        return Mono.just(new Score(person.name().length() + 60));
     }
 }

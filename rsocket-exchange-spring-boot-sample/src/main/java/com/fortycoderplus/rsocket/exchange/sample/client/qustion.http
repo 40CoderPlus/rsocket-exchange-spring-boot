@@ -1,2 +1,11 @@
+### question
 GET http://localhost:8081/question?current=1
+Content-Type: application/json
+
+### score
+GET http://localhost:8081/score?name=rscoket
+Content-Type: application/json
+
+### persons
+GET http://localhost:8081/persons
 Content-Type: application/json

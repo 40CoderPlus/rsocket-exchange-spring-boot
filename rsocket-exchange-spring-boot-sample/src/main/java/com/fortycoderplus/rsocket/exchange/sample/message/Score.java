@@ -18,23 +18,6 @@
  * limitations under the License.
  */
 
-package com.fortycoderplus.rsocket.exchange.sample.client;
+package com.fortycoderplus.rsocket.exchange.sample.message;
 
-import com.fortycoderplus.rsocket.exchange.autoconfigure.RSocketClient;
-import com.fortycoderplus.rsocket.exchange.sample.message.Answer;
-import com.fortycoderplus.rsocket.exchange.sample.message.Person;
-import com.fortycoderplus.rsocket.exchange.sample.message.Question;
-import com.fortycoderplus.rsocket.exchange.sample.message.Score;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.rsocket.service.RSocketExchange;
-import reactor.core.publisher.Mono;
-
-@RSocketClient
-public interface AnswerService {
-
-    @RSocketExchange("answer")
-    Mono<Answer> answer(@Payload Question question);
-
-    @RSocketExchange("score")
-    Mono<Score> score(@Payload Person person);
-}
+public record Score(int score) {}

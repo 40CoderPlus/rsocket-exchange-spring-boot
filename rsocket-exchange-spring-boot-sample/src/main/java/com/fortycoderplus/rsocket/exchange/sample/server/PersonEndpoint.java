@@ -18,33 +18,24 @@
  * limitations under the License.
  */
 
-package com.fortycoderplus.rsocket.exchange.sample.client;
+package com.fortycoderplus.rsocket.exchange.sample.server;
 
-import com.fortycoderplus.rsocket.exchange.sample.message.Answer;
 import com.fortycoderplus.rsocket.exchange.sample.message.Person;
-import com.fortycoderplus.rsocket.exchange.sample.message.Question;
-import com.fortycoderplus.rsocket.exchange.sample.message.Score;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
+import reactor.core.publisher.Flux;
 
+@Slf4j
 @AllArgsConstructor
-@Profile("client")
-@RestController
-public class QuestionApi {
+@Profile("server")
+@Controller
+public class PersonEndpoint {
 
-    private AnswerService answerService;
-
-    @RequestMapping(path = "/question")
-    public Mono<Answer> question(@RequestParam(name = "current") int current) {
-        return answerService.answer(new Question(current));
-    }
-
-    @RequestMapping(path = "/score")
-    public Mono<Score> score(Person person) {
-        return answerService.score(person);
+    @MessageMapping("persons")
+    public Flux<Person> persons() {
+        return Flux.just("rscoket", "exchange", "spring", "boot").map(Person::new);
     }
 }
