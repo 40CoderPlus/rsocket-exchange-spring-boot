@@ -51,7 +51,7 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
-    java {
+    jar {
         withSourcesJar()
     }
     test {
