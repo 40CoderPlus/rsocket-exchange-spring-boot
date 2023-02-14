@@ -24,9 +24,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RSocketExchangeApplication {
+public class RSocketExchangeSampleApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RSocketExchangeApplication.class, args);
+        SpringApplication.run(RSocketExchangeSampleApplication.class, args);
     }
 }
